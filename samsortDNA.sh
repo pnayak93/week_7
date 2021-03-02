@@ -3,7 +3,7 @@
 #SBATCH -A ecoevo283         ## account to charge
 #SBATCH -p standard          ## partition/queue name
 #SBATCH --array=1         ## number of tasks to launch, given hint below wc -l $file is helpful
-#SBATCH --cpus-per-task=5    ## number of cores the job needs, can the
+#SBATCH --cpus-per-task=12    ## number of cores the job needs, can the
 
 module load bwa/0.7.8
 module load samtools/1.10
@@ -14,11 +14,11 @@ module load picard-tools/1.87
 
 array=(A4_1 A4_2 A4_3 A5_1 A5_2 A5_3 A6_1 A6_2 A6_3 A7_1 A7_2 A7_3)
 
-k=0
-for j in {1..12}
+for j in ${!array[@]};
 do
-samtools sort alignedtest_"$j".bam -o alignedtest_"$j".sort.bam
-java -jar  /opt/apps/picard-tools/1.87/AddOrReplaceReadGroups.jar I=alignedtest_"$j".sort.bam O=alignedtest_"$j".RG.bam SORT_ORDER=coordinate RGPL=illumina RGPU=D109LACXX RGLB=Lib1 RGID=${array[k]} RGSM=${array[k]} VALIDATION_STRINGENCY=LENIENT
-samtools index alignedtest_"$j".RG.bam
-((k=k+1))
+id=${array[j]}
+idname=${id:0:2}
+samtools sort alignedDNA_"${array[j]}".bam -o alignedDNA_"${array[j]}".sort.bam
+java -jar  /opt/apps/picard-tools/1.87/AddOrReplaceReadGroups.jar I=alignedDNA_"${array[j]}".sort.bam O=alignedDNA_"${array[j]}".RG.bam SORT_ORDER=coordinate RGPL=illumina RGPU=D109LACXX RGLB=Lib1 RGID=$idname RGSM=$idname VALIDATION_STRINGENCY=LENIENT
+samtools index alignedDNA_"${array[j]}".RG.bam
 done
