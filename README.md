@@ -13,3 +13,6 @@ cut -b 1-7 RNAprefix2.txt > RNAprefixlist.txt
 for the ATACseq and DNAseq jobs, the prefixes were simply kept in an array and looped through for the alignment/sorting/indexing.
 
 The ATACseq and DNAseq alignment jobs were designed to be left one directory above the fq.gz files, and the RNAseq job was designed to be left in the directory with the fq.gz symlinks.
+
+The ATACseq and DNAseq align jobs `alignATAC.sh` and `alignDNA.sh` were created without parallelization and using `bwa mem`, and the RNAseq `alignRNA.sh` job was created WITH parallelization in slurm, and using the `hisat2` aligner. Additionally, the alignment and sorting steps were split into separate scripts for testing purposes, but they could easily be combined together into single scripts as well. The `samsortATAC.sh`, `samsortRNA.sh` and `samsortDNA.sh` scripts are the respective samtool sorting scripts and designed to be run on the data after the alignment has completed for each dataset.
+
